@@ -66,8 +66,3 @@ These scripts offer a convenient way to execute the dynamic graph learning model
 * **Recommendation models** : Utilize [run_baseline_rec.sh](https://github.com/youngandbin/ICAIF2024/blob/main/baseline_rec/run_baseline_rec.sh) to run, and utilize [run_baseline_rec_evaluation.sh](https://github.com/youngandbin/ICAIF2024/blob/main/baseline_rec/run_baseline_rec_evaluation.sh) to evaluate recommendation models
 
 * **Stock recommendation models** : Utilize [run_baseline_stock_rec.sh](https://github.com/youngandbin/ICAIF2024/blob/main/baseline_stock_rec/run_baseline_stock_rec.sh) to run, and utilize [run_baseline_stock_rec_evaluation.sh](https://github.com/youngandbin/ICAIF2024/blob/main/baseline_stock_rec/run_baseline_stock_rec_evaluation.sh) to evaluate stock recommendation models
-
-### Data preprocessing
-
-Furthermore, explore our data preprocessing that is available in the [data_prepocess.ipynb](https://github.com/youngandbin/ICAIF2024/blob/main/data/data_preprocess.ipynb).
-
