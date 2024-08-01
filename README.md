@@ -41,7 +41,7 @@ You can check the code used here in [baseline_stock_rec](https://github.com/youn
 
 ## Datasets
 
-In the paper, we used mock trading dataset obtained from a stock trading platform *AlphaSquare*. The datasets are available in [Google Drive](https://drive.google.com/drive/folders/1g9_jQZTxgbdx113rq0Tc8hV1tHjZN-ax?usp=drive_link). The data is composed of seven sub-datasets, each consisting of seven periods.
+In the paper, we used mock trading dataset obtained from a stock trading platform *AlphaSquare*. The datasets are available in [Google Drive](https://drive.google.com/drive/folders/1rvFOCIua8FJ3qAC1QViMSwp1epzwrwAy?usp=sharing). The data is composed of seven sub-datasets, each consisting of seven periods.
 
 - - -
 
