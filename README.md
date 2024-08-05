@@ -24,7 +24,7 @@ Collaborative filtering (CF) algorithms that capture user preferences based on u
 * *LightGCN* : a graph convolution network based collaborative filtering method.
 * *SGL* : a self-supervised graph learning approach which incorporates a contrastive loss into the classical supervised task of recommendation.
 
-You can check the code used here in [baseline_rec](https://github.com/youngandbin/ICAIF2024/tree/main/baseline_rec).
+You can check the code used here in [baseline_rec](https://github.com/youngandbin/ICAIF2024/baseline_rec).
 
 
 (3) **Stock recommendation models**
@@ -34,7 +34,7 @@ CF based models that take into account both individual preferences and portfolio
 - *two-step method* ([Swezey and Charron, 2018](https://arxiv.org/abs/2103.07768)): ranks items based on user preferences, and then re-ranks them based on the modern portfolio theory (MPT).
 - *MVECF* ([Chung et al, 2023](https://arxiv.org/abs/2306.06590)): uses a ranking loss function based on the MPT into a matrix factorization model.
 
-You can check the code used here in [baseline_stock_rec](https://github.com/youngandbin/ICAIF2024/tree/main/baseline_stock_rec).
+You can check the code used here in [baseline_stock_rec](https://github.com/youngandbin/ICAIF2024/baseline_stock_rec).
 
 
 - - -
