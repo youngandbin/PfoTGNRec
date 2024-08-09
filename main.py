@@ -5,28 +5,11 @@ from model.tgn import TGN
 from evaluation import eval_recommendation
 from utils.data import get_data, compute_time_statistics
 from utils.utils import EarlyStopMonitor, RandEdgeSampler, get_neighbor_finder
+import scipy.stats as stats
 torch.manual_seed(0)
 np.random.seed(0)
 
-import scipy.stats as stats
 
-def new_rank_of_weighted_ranks(list1, list2, weight1): 
-  
-    weight2 = 1 - weight1
-    # Ensure the sum of weights is 1
-    assert weight1 + weight2 == 1, "The sum of weights must be 1"
-    
-    # Rank the elements in each list
-    ranks1 = stats.rankdata(list1)
-    ranks2 = stats.rankdata(list2)
-    
-    # Calculate the weighted average rank for each element
-    weighted_ranks = [weight1 * rank1 + weight2 * rank2 for rank1, rank2 in zip(ranks1, ranks2)]
-    
-    # Rank the elements based on their weighted average ranks
-    final_ranks = stats.rankdata(weighted_ranks)
-    
-    return final_ranks
   
 """
 argument
@@ -108,7 +91,7 @@ data
 """ 
 node_features, edge_features, full_data, train_data, val_data, test_data, upper_u = get_data('transaction', args.period)
 node_features = np.random.rand(len(node_features), args.memory_dim)                  # Generate new node features randomly based on the memory dimension (memory dim).
-time_feature = pickle.load(open(f'data/time_feature_future.pkl', 'rb'))                # Dictionary containing historical daily prices for all stocks for each timestamp (ts).
+time_feature = pickle.load(open(f'data/period_{args.period}/time_feature_future.pkl', 'rb'))                # Dictionary containing historical daily prices for all stocks for each timestamp (ts).
 map_item_id = pickle.load(open(f'data/period_{args.period}/map_item_id.pkl', 'rb'))  # Used to convert stock codes in a user portfolio to item idx.
 
 """
