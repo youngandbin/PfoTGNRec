@@ -19,7 +19,7 @@ wait
 
  # WMF
 
-for target_year in period_1 period_2 period_3 period_4 period_5 period_6 period_7; do 
+for target_year in period_all; do 
     num=0
     num=$((num + 1))
     python script_wmf.py \
@@ -32,7 +32,7 @@ wait
 
 # WMF-twophase
 
-for target_year in period_1 period_2 period_3 period_4 period_5 period_6 period_7; do 
+for target_year in period_all; do 
     num=0
     num=$((num + 1))
     python script_twophase.py \
