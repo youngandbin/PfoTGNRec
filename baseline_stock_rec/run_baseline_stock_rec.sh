@@ -1,6 +1,6 @@
 # MVECF-WMF
 
-for target_year in period_1 period_2 period_3 period_4 period_5 period_6 period_7; do 
+for target_year in period_all; do 
     num=0
     for gamma in 1 3 5; do
         for reg_param_mv in 0.1 1 10; do
