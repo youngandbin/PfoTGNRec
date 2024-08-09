@@ -1,4 +1,4 @@
-for dataset in period_1 period_2 period_3 period_4 period_5 period_6 period_7
+for dataset in period_all
 do
     for model in BPR LightGCN SGL
     do
