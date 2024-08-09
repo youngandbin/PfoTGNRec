@@ -24,7 +24,7 @@ Collaborative filtering (CF) algorithms that capture user preferences based on u
 * *LightGCN* : a graph convolution network based collaborative filtering method.
 * *SGL* : a self-supervised graph learning approach which incorporates a contrastive loss into the classical supervised task of recommendation.
 
-You can check the code used here in [baseline_rec](https://github.com/youngandbin/ICAIF2024/baseline_rec).
+You can check the code used here in [baseline_rec](https://github.com/youngandbin/ICAIF2024/tree/main/baseline_rec).
 
 
 (3) **Stock recommendation models**
