@@ -1,5 +1,7 @@
 # Stock recommendation
 
+ > Official implementation of "Stock Recommendations for Individual Investors: A Temporal Graph Network Approach with Mean-Variance Efficient Sampling (ICAIF '24)"
+
 The tricky point in stock recommendation is that recommendations should give good investment performance but also should not ignore individual preferences. To tackle this challenge, we propose **PfoTGNRec**, which can handle time-varying collaborative signals and incorporates mean-variance efficient sampling. 
 
 ![model](assets/model.png)
