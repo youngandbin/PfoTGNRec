@@ -1,4 +1,4 @@
-# Stock recommendation
+# [ICAIF 2024] Stock Recommendations for Individual Investors: A Temporal Graph Network Approach with Mean-Variance Efficient Sampling
 
  > Official implementation of "Stock Recommendations for Individual Investors: A Temporal Graph Network Approach with Mean-Variance Efficient Sampling (ICAIF '24)"
 
