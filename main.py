@@ -19,7 +19,7 @@ parser.add_argument('--gpu', type=int, default=0, help='Idx for the gpu to use')
 parser.add_argument('--prefix', type=str, default='', help='Prefix to name the checkpoints')
 parser.add_argument('--test_run', action='store_true', help='*run only first two batches')
 # model
-parser.add_argument('--n_heads', type=int, default=2, help='Number of attention heads') 
+parser.add_argument('--n_head', type=int, default=2, help='Number of attention heads') 
 parser.add_argument('--memory_dim', type=int, default=64, help='Dimensions of the memory for each user')
 parser.add_argument('--model_name', type=str, default="ours", choices=["ours", "tgn", "tgat", "jodie", "dyrep"], help='Type of model')
 parser.add_argument('--lr', type=float, default=0.0001, help='Learning rate') 
@@ -50,7 +50,7 @@ NUM_EPOCH = args.epoch
 USE_MEMORY = True
 BACKPROP_EVERY = 1
 N_LAYERS = 1
-N_HEADS = args.n_heads
+N_HEADS = args.n_head
 LEARNING_RATE = args.lr
 args.memory_updater = 'gru' # choices=["gru", "rnn"]
 args.embedding_module = 'graph_attention' # choices=["graph_attention", "graph_sum", "identity", "time"]
@@ -69,7 +69,7 @@ elif args.model_name=='dyrep':
   args.dyrep = True
 elif args.model_name=='tgat':
   USE_MEMORY = False
-  N_HEADS = args.n_heads
+  N_HEADS = args.n_head
   LEARNING_RATE = args.lr
   args.uniform = True
 
