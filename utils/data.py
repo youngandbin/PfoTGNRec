@@ -15,7 +15,7 @@ class Data:
     self.n_unique_nodes = len(self.unique_nodes)
     self.portfolios = portfolios
 
-def get_data(dataset_name, period, data_split):
+def get_data(dataset_name, period):
 
   save_path = f'./data/period_{period}/'
 
@@ -23,22 +23,9 @@ def get_data(dataset_name, period, data_split):
   graph_df = pd.read_json(save_path+'ml_{}.json'.format(dataset_name)) 
   edge_features = np.load(save_path+'ml_{}.npy'.format(dataset_name))
   node_features = np.load(save_path+'ml_{}_node.npy'.format(dataset_name)) 
-  user_features = np.load(save_path+'ml_{}_user.npy'.format(dataset_name)) 
-  item_features = np.load(save_path+'ml_{}_item.npy'.format(dataset_name)) 
 
-  # convert data_split
-  # e.g., [8,1,1] -> [0.8, 0.9], [6,2,2] -> [0.6, 0.8]
-  train, valid, test = data_split
-  assert train + valid + test == 10, "data split should sum to 10"
-  print('data split: train, valid, test:', train, valid, test)
-  train = train / 10.0
-  valid = train + (valid / 10.0)
-
-  init_time = graph_df.ts.min()
-  val_time, test_time = list(np.quantile(graph_df.ts, [train, valid]))
-  print('init time: ', init_time)
-  print('val time: ', val_time)
-  print('test time: ', test_time)
+  val_time, test_time = list(np.quantile(graph_df.ts, [0.8, 0.9])) # data split of 7:1:1
+  print('val time, test time:', val_time, test_time)
 
   sources = graph_df.u.values
   destinations = graph_df.i.values
@@ -82,7 +69,7 @@ def get_data(dataset_name, period, data_split):
     test_data.n_interactions, test_data.n_unique_nodes))
   print('')
 
-  return node_features, user_features, item_features, edge_features, full_data, train_data, val_data, test_data, upper_u
+  return node_features, edge_features, full_data, train_data, val_data, test_data, upper_u
 
 
 def compute_time_statistics(sources, destinations, timestamps):
