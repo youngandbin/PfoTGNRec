@@ -89,10 +89,6 @@ def run(data_name, bipartite=True, period='1'):
   df, feat = preprocess(PATH)
   new_df = reindex(df, bipartite)
 
-  # # edge features
-  # empty = np.zeros(len(feat))[np.newaxis, :]
-  # feat = np.vstack([empty, feat])
-
   # edge features
   feat = np.load(save_path+'{}.npy'.format(data_name))
   empty = np.zeros(feat.shape[1])[np.newaxis, :]

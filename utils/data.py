@@ -24,7 +24,7 @@ def get_data(dataset_name, period):
   edge_features = np.load(save_path+'ml_{}.npy'.format(dataset_name))
   node_features = np.load(save_path+'ml_{}_node.npy'.format(dataset_name)) 
 
-  val_time, test_time = list(np.quantile(graph_df.ts, [0.8, 0.9])) # data split of 7:1:1
+  val_time, test_time = list(np.quantile(graph_df.ts, [0.8, 0.9])) # data split of 8:1:1
   print('val time, test time:', val_time, test_time)
 
   sources = graph_df.u.values

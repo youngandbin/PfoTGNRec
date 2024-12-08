@@ -35,19 +35,21 @@ def return_sharpe_at_k(ts, port_feature, return_, sharpe, time_feature, pos_neg_
 
     return return_new - return_, sharpe_new - sharpe #, daily_return_new
    
-def eval_recommendation(tgn, data, full_data, batch_size, n_neighbors, upper_u, period, is_test_run, EVAL, SEED): 
+
+def eval_recommendation(tgn, data, full_data, batch_size, n_neighbors, upper_u, period, is_test_run, EVAL): 
 
     time_feature_past = pickle.load(open(f'data/period_{period}/time_feature_past_{period}.pkl', 'rb'))      # Dictionary containing historical daily prices for all stocks for each timestamp (ts).
     time_feature_future = pickle.load(open(f'data/period_{period}/time_feature_future_{period}.pkl', 'rb'))  # Dictionary containing future daily prices for all stocks for each time series (ts)
-    map_item_id = pickle.load(open(f'data/period_{period}/map_item_id.pkl', 'rb'))                           # Used to convert stock codes in a user portfolio to item idx.
+    map_item_id = pickle.load(open(f'data/period_{period}/map_item_id.pkl', 'rb'))  # Used to convert stock codes in a user portfolio to item idx.
 
     with torch.no_grad():
         tgn = tgn.eval()
         # While usually the test batch size is as big as it fits in memory, 
         # here we keep it the same size as the training batch size, since it allows the memory to be updated more frequently,
         # and later test batches to access information from interactions in previous test batches through the memory
+        TEST_BATCH_SIZE = batch_size
         num_test_instance = len(data.sources)
-        num_test_batch = math.ceil(num_test_instance / batch_size)
+        num_test_batch = math.ceil(num_test_instance / TEST_BATCH_SIZE)
         
         """
         batch iteraction
@@ -60,8 +62,8 @@ def eval_recommendation(tgn, data, full_data, batch_size, n_neighbors, upper_u, 
           
         for batch in tqdm(range(num_test_batch), desc=f"Progress: Eval Batch"):
 
-          s_idx = batch * batch_size
-          e_idx = min(num_test_instance, s_idx + batch_size)
+          s_idx = batch * TEST_BATCH_SIZE
+          e_idx = min(num_test_instance, s_idx + TEST_BATCH_SIZE)
 
           if e_idx == num_test_instance:
             continue
@@ -80,10 +82,10 @@ def eval_recommendation(tgn, data, full_data, batch_size, n_neighbors, upper_u, 
 
           # 240601 
           destinations = full_data.destinations
-          N_ITEMS = 50 # len(np.unique(destinations))
+          N_ITEMS = len(np.unique(destinations))
 
           # negative sampling 
-          train_rand_sampler = RandEdgeSampler(sources_batch, destinations, portfolios_batch, upper_u, map_item_id, seed=SEED)
+          train_rand_sampler = RandEdgeSampler(sources_batch, destinations, portfolios_batch, upper_u, map_item_id, seed=2024)
           negatives_batch = train_rand_sampler.sample(size=N_ITEMS)  # (BATCH_SIZE, size) # item idx
 
           """
@@ -112,16 +114,15 @@ def eval_recommendation(tgn, data, full_data, batch_size, n_neighbors, upper_u, 
           pos_scores = torch.sum(source_embedding * destination_embedding, dim=2).cpu().numpy() # (bs, 1)
           neg_scores = torch.sum(source_embedding * negative_embedding, dim=2).cpu().numpy()    # (bs, size)
           
+          """
+          interaction loop
+          """
 
           # convert item idx to stock codes 
           destinations_batch = destinations_batch - (upper_u + 1)                                           # item idx -> idx starting from 0
           destinations_batch = np.vectorize({v: k for k, v in map_item_id.items()}.get)(destinations_batch) # idx starting from 0 -> stock codes (6 digits)
           negatives_batch = negatives_batch - (upper_u + 1)                                                 # item idx -> idx starting from 0
           negatives_batch = np.vectorize({v: k for k, v in map_item_id.items()}.get)(negatives_batch)       # idx starting from 0 -> stock codes (6 digits)
-
-          """
-          interaction loop
-          """
 
           for i in range(bsbs):
 
@@ -154,8 +155,8 @@ def eval_recommendation(tgn, data, full_data, batch_size, n_neighbors, upper_u, 
             if '' in portfolio:
               return_, sharpe, return__, sharpe_ = 0, 0, 0, 0
               # port_feature is empty and it should be concatenated with another np array with shape of (k, 30)
-              port_feature = np.empty((0, 30)) #int(period)))
-              port_feature_ = np.empty((0, 30)) #int(period)))
+              port_feature = np.empty((0, int(period)))
+              port_feature_ = np.empty((0, int(period)))
               
             else:
               # original portfolio performance (in sample)
@@ -205,9 +206,6 @@ def eval_recommendation(tgn, data, full_data, batch_size, n_neighbors, upper_u, 
             returns_.append([return_diff_1_, return_diff_3_, return_diff_5_])
             sharpes_.append([sharpe_diff_1_, sharpe_diff_3_, sharpe_diff_5_])
         
-        """
-        batch iteration done
-        """
         # recommendation performances
         recall_avgs = [np.mean([recalls[i][top] for i in range(len(recalls))]) for top in range(len(topk))] # top1, top3, top5
         ndcg_avgs = [np.mean([ndcgs[i][top] for i in range(len(ndcgs))]) for top in range(len(topk))] # top1, top3, top5  

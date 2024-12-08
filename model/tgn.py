@@ -10,11 +10,10 @@ from modules.message_function import get_message_function
 from modules.memory_updater import get_memory_updater
 from modules.embedding_module import get_embedding_module
 from model.time_encoding import TimeEncode
-from model.feature_encoding import UserEncode, ItemEncode
 
 
 class TGN(torch.nn.Module):
-  def __init__(self, neighbor_finder, node_features, user_features, item_features, edge_features, device, n_layers=2,
+  def __init__(self, neighbor_finder, node_features, edge_features, device, n_layers=2,
                n_heads=2, dropout=0.1, use_memory=False,
                memory_update_at_start=True, 
                message_dimension=100, memory_dimension=500,
@@ -32,9 +31,6 @@ class TGN(torch.nn.Module):
     self.neighbor_finder = neighbor_finder
     self.device = device
     self.logger = logging.getLogger(__name__)
-    ####################################MLP넣어주기#######################
-    self.user_encoder = UserEncode(user_features.shape[1])
-    self.item_encoder = ItemEncode(item_features.shape[1])
 
     self.node_raw_features = torch.from_numpy(node_features.astype(np.float32)).to(device)
 
@@ -44,7 +40,7 @@ class TGN(torch.nn.Module):
     edge_features /= edge_features.std(axis=0)
     self.edge_raw_features = torch.from_numpy(edge_features.astype(np.float32)).to(device)
     
-    self.n_node_features = self.node_raw_features.shape[1] 
+    self.n_node_features = self.node_raw_features.shape[1]
     self.n_nodes = self.node_raw_features.shape[0]
     self.n_edge_features   = self.edge_raw_features.shape[1]
     self.embedding_dimension = self.n_node_features
@@ -88,14 +84,10 @@ class TGN(torch.nn.Module):
 
     self.embedding_module = get_embedding_module(module_type=embedding_module_type,
                                                  node_features=self.node_raw_features,
-                                                 user_features=user_features,
-                                                 item_features=item_features,
                                                  edge_features=self.edge_raw_features,
                                                  memory=self.memory,
                                                  neighbor_finder=self.neighbor_finder,
                                                  time_encoder=self.time_encoder,
-                                                 user_encoder = self.user_encoder, ##################MLP
-                                                 item_encoder = self.item_encoder, ##################MLP
                                                  n_layers=self.n_layers,
                                                  n_node_features=self.n_node_features,
                                                  n_edge_features=self.n_edge_features,
@@ -174,12 +166,12 @@ class TGN(torch.nn.Module):
                                                              n_neighbors=n_neighbors,
                                                              time_diffs=time_diffs) 
 
-    # source node 1개당 p_pos_node 1개, p_neg_node 3개 있음. 따라서 2*bs, 3*bs로 나눠줌.
+    # Each source node has 1 p_pos_node and 3 p_neg_nodes. Therefore, they are divided into 2*bs and 3*bs.
     n = 1
     source_node_embedding       = node_embedding[:n*bs]
     destination_node_embedding  = node_embedding[n*bs : (n+1)*bs]
-    p_pos_node_embedding        = node_embedding[(n+1)*bs : (n+1+NUM_POS_TRAIN)* bs] ## yj
-    p_neg_node_embedding        = node_embedding[(n+1+NUM_POS_TRAIN)*bs:] ## yj
+    p_pos_node_embedding        = node_embedding[(n+1)*bs : (n+1+NUM_POS_TRAIN)* bs] 
+    p_neg_node_embedding        = node_embedding[(n+1+NUM_POS_TRAIN)*bs:] 
 
     """
     3. Raw message store
@@ -271,7 +263,8 @@ class TGN(torch.nn.Module):
       destination_time_diffs = (destination_time_diffs - self.mean_time_shift_dst) / self.std_time_shift_dst
       p_neg_time_diffs = torch.LongTensor(edge_times_duplicated).to(self.device) - last_update[p_neg_nodes].long() 
       p_neg_time_diffs = (p_neg_time_diffs - self.mean_time_shift_dst) / self.std_time_shift_dst
-      time_diffs = torch.cat([source_time_diffs, destination_time_diffs, p_neg_time_diffs], dim=0) #####error 
+      time_diffs = torch.cat([source_time_diffs, destination_time_diffs, p_neg_time_diffs], dim=0)
+
 
     """
     2. Embedding (GNN module)
@@ -302,8 +295,8 @@ class TGN(torch.nn.Module):
         self.update_memory(positives, self.memory.messages) # s = RNN(m, s-)
 
         # Check if two tensors are identical.
-        # assert torch.allclose(memory[positives], self.memory.get_memory(positives), atol=1e-5), \
-        #   "Something wrong in how the memory was updated"
+        assert torch.allclose(memory[positives], self.memory.get_memory(positives), atol=1e-5), \
+          "Something wrong in how the memory was updated"
 
         # Remove messages for the positives since we have already updated the memory using them
         self.memory.clear_messages(positives)
