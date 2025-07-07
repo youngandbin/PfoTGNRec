@@ -22,7 +22,7 @@ for lambda_mv in "${lambda_mvs[@]}"; do
             --lambda_mv $lambda_mv \
             --bs $bs \
             --drop_out $drop_out \
-            --n_heads $n_head \
+            --n_head $n_head \
             --memory_dim $memory_dim
         done
       done
