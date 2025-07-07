@@ -13,7 +13,7 @@ for lambda_mv in "${lambda_mvs[@]}"; do
         current_time=$(TZ="Asia/Seoul" date -d "+0 hours" "+%y%m%d_%H%M%S")
         
         # Execute the python script with the current set of hyperparameters
-        python main_9.py \
+        python main.py \
         --prefix $current_time \
         --model_name 'jodie' \
         --gpu 0 \
