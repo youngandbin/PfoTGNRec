@@ -2,7 +2,7 @@
 lambda_mvs=(0.5)
 batch_sizes=(128)
 drop_outs=(0)
-n_headss=(2)
+n_heads=(2)
 
 # Iterate over each combination of hyperparameters
 for lambda_mv in "${lambda_mvs[@]}"; do
